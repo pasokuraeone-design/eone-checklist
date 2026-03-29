@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>R7 チェックリスト | イーワンスクエア</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Zen+Old+Mincho:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0d1117;
+  --s1:       #161b22;
+  --s2:       #1c2230;
+  --border:   #272e3d;
+  --border2:  #303a50;
+  --text:     #cdd9f0;
+  --mid:      #7a8aaa;
+  --dim:      #3d4a62;
+  --green:    #3ddc84;
+  --gdim:     #122a1c;
+  --gmid:     #1f5035;
+  --amber:    #f5a623;
+  --adim:     #2a1d08;
+  --blue:     #58a6ff;
+  --bdim:     #0c1f3a;
+  --red:      #f47067;
+  --rdim:     #2a0f0e;
+  --r: 12px;
+  --sh: 0 8px 32px rgba(0,0,0,0.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px}
+
+/* ── LOGIN ── */
+#loginScreen{
+  position:fixed;inset:0;
+  background:var(--bg);
+  z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
+}
+.login-card{
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:48px 40px;
+  width:100%;max-width:420px;
+  box-shadow:var(--sh);
+  text-align:center;
+}
+.login-mark{
+  width:56px;height:56px;border-radius:14px;
+  background:var(--gdim);border:1px solid var(--gmid);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 24px;
+  font-size:1.4rem;
+}
+.login-title{
+  font-family:'Zen Old Mincho',serif;
+  font-size:1.1rem;letter-spacing:0.08em;
+  margin-bottom:6px;
+}
+.login-sub{font-size:0.78rem;color:var(--mid);margin-bottom:32px;letter-spacing:0.05em;}
+.login-input{
+  width:100%;padding:13px 16px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:10px;
+  color:var(--text);
+  font-size:1rem;font-family:inherit;
+  text-align:center;letter-spacing:0.15em;
+  outline:none;transition:border-color .2s;
+  margin-bottom:14px;
+}
+.login-input:focus{border-color:var(--green);}
+.login-btn{
+  width:100%;padding:13px;
+  background:var(--green);color:#071a0e;
+  border:none;border-radius:10px;
+  font-size:0.9rem;font-weight:700;
+  cursor:pointer;transition:opacity .2s;
+  letter-spacing:0.06em;
+}
+.login-btn:hover{opacity:.85}
+.login-err{
+  font-size:0.78rem;color:var(--red);
+  margin-top:10px;height:18px;
+}
+.login-hint{
+  font-size:0.7rem;color:var(--dim);
+  margin-top:20px;line-height:1.8;
+}
+
+/* ── FIRST-RUN SETUP ── */
+#setupScreen{
+  position:fixed;inset:0;background:rgba(13,17,23,0.97);
+  z-index:9998;display:flex;align-items:center;justify-content:center;padding:24px;
+}
+.setup-card{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:20px;padding:40px;
+  width:100%;max-width:500px;box-shadow:var(--sh);
+}
+.setup-heading{
+  font-family:'Zen Old Mincho',serif;font-size:1.15rem;
+  margin-bottom:8px;
+}
+.setup-desc{font-size:0.8rem;color:var(--mid);margin-bottom:28px;line-height:1.9;}
+.field-label{font-size:0.68rem;letter-spacing:.12em;color:var(--mid);margin-bottom:6px;display:block;}
+.field-input{
+  width:100%;padding:11px 14px;
+  background:var(--bg);border:1px solid var(--border);border-radius:9px;
+  color:var(--text);font-family:inherit;font-size:0.88rem;
+  outline:none;transition:border-color .2s;margin-bottom:18px;
+}
+.field-input:focus{border-color:var(--green);}
+.setup-note{font-size:0.72rem;color:var(--dim);margin-bottom:24px;line-height:1.8;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-p{
+  padding:11px 22px;background:var(--green);color:#071a0e;
+  border:none;border-radius:9px;font-size:0.85rem;font-weight:700;
+  cursor:pointer;transition:opacity .2s;
+}
+.btn-p:hover{opacity:.85}
+.btn-s{
+  padding:11px 18px;background:transparent;color:var(--mid);
+  border:1px solid var(--border);border-radius:9px;
+  font-size:0.82rem;cursor:pointer;transition:border-color .2s;
+}
+.btn-s:hover{border-color:var(--mid);color:var(--text);}
+
+/* ── HEADER ── */
+.hdr{
+  position:sticky;top:0;z-index:100;
+  background:rgba(13,17,23,0.9);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.hdr-inner{
+  max-width:880px;margin:0 auto;
+  padding:14px 24px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.hdr-left{flex:1;min-width:0;}
+.hdr-org{font-size:0.62rem;letter-spacing:.22em;color:var(--dim);font-family:'Zen Old Mincho',serif;}
+.hdr-title{font-size:0.95rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hdr-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.btn-xl{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 13px;
+  background:var(--gdim);color:var(--green);
+  border:1px solid var(--gmid);border-radius:7px;
+  font-size:0.73rem;font-weight:500;text-decoration:none;
+  transition:background .2s;white-space:nowrap;
+}
+.btn-xl:hover{background:var(--gmid);}
+.btn-sm{
+  padding:7px 12px;
+  background:transparent;color:var(--mid);
+  border:1px solid var(--border);border-radius:7px;
+  font-size:0.73rem;cursor:pointer;transition:all .2s;
+  white-space:nowrap;
+}
+.btn-sm:hover{border-color:var(--mid);color:var(--text);}
+
+/* ── PROGRESS ── */
+.prog-wrap{max-width:880px;margin:24px auto 0;padding:0 24px;}
+.prog-card{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--r);padding:22px 26px;
+  display:flex;align-items:center;gap:24px;flex-wrap:wrap;
+}
+.ring-wrap{position:relative;width:72px;height:72px;flex-shrink:0;}
+.ring{transform:rotate(-90deg);}
+.rb{fill:none;stroke:var(--border);stroke-width:5.5;}
+.rf{fill:none;stroke:var(--green);stroke-width:5.5;stroke-linecap:round;transition:stroke-dashoffset .5s ease;}
+.ring-num{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-size:1.2rem;font-weight:700;line-height:1;
+}
+.ring-of{font-size:0.58rem;color:var(--mid);margin-top:2px;}
+.prog-info{flex:1;min-width:160px;}
+.prog-lbl{font-size:0.65rem;letter-spacing:.12em;color:var(--mid);margin-bottom:8px;}
+.prog-track{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:5px;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--green),#7aefc0);border-radius:3px;transition:width .5s ease;width:0%;}
+.prog-pct{font-size:0.7rem;color:var(--dim);}
+.deadline-blk{margin-left:auto;}
+.dl-lbl{font-size:0.62rem;letter-spacing:.1em;color:var(--dim);margin-bottom:5px;}
+.dl-input{
+  background:var(--s2);border:1px solid var(--border);border-radius:8px;
+  padding:8px 12px;color:var(--text);
+  font-family:inherit;font-size:0.83rem;outline:none;
+  transition:border-color .2s;width:196px;
+}
+.dl-input:focus{border-color:var(--green);}
+.dl-input::placeholder{color:var(--dim);}
+
+/* ── MAIN ── */
+.main{max-width:880px;margin:24px auto 0;padding:0 24px;}
+.sec-lbl{
+  font-size:0.62rem;letter-spacing:.2em;color:var(--dim);
+  text-transform:uppercase;margin-bottom:12px;margin-top:28px;padding-left:2px;
+}
+.sheet-list{display:flex;flex-direction:column;gap:8px;}
+
+/* ── CARD ── */
+.scard{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;
+  transition:border-color .2s,box-shadow .2s;
+}
+.scard:hover{border-color:var(--border2);box-shadow:0 4px 20px rgba(0,0,0,.35);}
+.scard.done{border-left:3px solid var(--green);}
+
+.scard-hdr{
+  display:flex;align-items:center;gap:13px;
+  padding:14px 18px;cursor:pointer;user-select:none;
+}
+.scard.done .scard-hdr{opacity:.65}
+.sicon{
+  width:38px;height:38px;border-radius:9px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.65rem;font-weight:700;letter-spacing:0;
+  background:var(--s2);color:var(--mid);border:1px solid var(--border);
+  transition:all .2s;
+}
+.scard.done .sicon{background:var(--gdim);color:var(--green);border-color:var(--gmid);}
+.smeta{flex:1;min-width:0;}
+.sname{font-size:0.9rem;font-weight:500;line-height:1.3;}
+.sdesc{font-size:0.7rem;color:var(--mid);margin-top:2px;}
+.stag{
+  font-size:0.6rem;padding:3px 9px;border-radius:20px;
+  font-weight:500;letter-spacing:.04em;flex-shrink:0;
+}
+.tm{background:rgba(244,112,103,.1);color:var(--red);border:1px solid rgba(244,112,103,.2);}
+.tc{background:rgba(88,166,255,.1);color:var(--blue);border:1px solid rgba(88,166,255,.2);}
+.td{background:var(--gdim);color:var(--green);border:1px solid var(--gmid);}
+.schev{color:var(--dim);transition:transform .2s;flex-shrink:0;}
+.scard.open .schev{transform:rotate(180deg);}
+
+.sbody{
+  display:none;border-top:1px solid var(--border);
+  padding:18px 18px 20px 70px;
+}
+.scard.open .sbody{display:block;}
+
+.ctitle{font-size:0.6rem;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-bottom:10px;}
+.citem{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);}
+.citem:last-child{border-bottom:none;}
+.citem input[type=checkbox]{width:15px;height:15px;margin-top:3px;accent-color:var(--green);cursor:pointer;flex-shrink:0;}
+.citem label{font-size:0.82rem;line-height:1.55;cursor:pointer;color:var(--text);transition:color .15s;}
+.citem input:checked+label{text-decoration:line-through;color:var(--dim);}
+
+.memo-wrap{margin-top:16px;}
+.memo-lbl{font-size:0.6rem;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;margin-bottom:6px;}
+.memo-ta{
+  width:100%;min-height:62px;
+  padding:10px 12px;
+  background:var(--bg);border:1px solid var(--border);border-radius:8px;
+  color:var(--text);font-family:inherit;font-size:0.8rem;line-height:1.7;
+  resize:vertical;outline:none;transition:border-color .2s;
+}
+.memo-ta:focus{border-color:var(--green);}
+.memo-ta::placeholder{color:var(--dim);}
+
+.cactions{margin-top:14px;display:flex;gap:8px;align-items:center;}
+.btn-done{
+  padding:8px 18px;border-radius:7px;
+  font-size:0.78rem;font-weight:600;
+  cursor:pointer;transition:all .15s;border:none;letter-spacing:.04em;
+}
+.done-on{background:var(--green);color:#071a0e;}
+.done-on:hover{opacity:.85;}
+.done-off{background:transparent;color:var(--mid);border:1px solid var(--border) !important;}
+.done-off:hover{border-color:var(--mid) !important;color:var(--text);}
+
+/* ── FOOTER TOOLS ── */
+.ftool{
+  max-width:880px;margin:32px auto 0;padding:0 24px;
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+}
+.ftool-note{font-size:0.7rem;color:var(--dim);flex:1;line-height:1.8;}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--s2);border:1px solid var(--border2);
+  padding:10px 20px;border-radius:10px;
+  font-size:0.8rem;color:var(--text);
+  opacity:0;transition:all .3s;pointer-events:none;z-index:500;
+  white-space:nowrap;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+@media(max-width:600px){
+  .hdr-inner{padding:12px 14px;}
+  .prog-wrap,.main{padding:0 14px;}
+  .sbody{padding-left:18px;}
+  .deadline-blk{margin-left:0;width:100%;}
+  .dl-input{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="loginScreen" style="display:none;">
+  <div class="login-card">
+    <div class="login-mark">🏠</div>
+    <div class="login-title">イーワンスクエア</div>
+    <div class="login-sub">運営管理ポータル</div>
+    <input type="password" class="login-input" id="pwIn" placeholder="パスワード"
+      onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">ログイン</button>
+    <div class="login-err" id="pwErr"></div>
+    <div class="login-hint">※ パスワードはこのブラウザに保存されます。<br>初回設定済みのPCなら次回から自動ログインです。</div>
+  </div>
+</div>
+
+<!-- ===== FIRST-RUN SETUP ===== -->
+<div id="setupScreen" style="display:none;">
+  <div class="setup-card">
+    <div class="setup-heading">はじめに：パスワードを設定してください</div>
+    <div class="setup-desc">
+      このページへのアクセスに使うパスワードを決めてください。<br>
+      同じパスワードを使うPCすべてで同じページにアクセスできます。<br>
+      （チェック状態はブラウザごとに保存されます）
+    </div>
+    <label class="field-label">パスワード</label>
+    <input type="password" class="field-input" id="setPw1" placeholder="パスワードを入力">
+    <label class="field-label">パスワード（確認）</label>
+    <input type="password" class="field-input" id="setPw2" placeholder="もう一度入力"
+      onkeydown="if(event.key==='Enter')doSetup()">
+    <div class="setup-note">
+      ※ パスワードを忘れた場合はブラウザのlocalStorageをリセットして再設定できます。<br>
+      ※ 完全なセキュリティは保証されません。社外秘情報は書き込まないでください。
+    </div>
+    <div class="btn-row">
+      <button class="btn-p" onclick="doSetup()">設定して開始</button>
+      <button class="btn-s" onclick="skipPw()">パスワードなしで使う</button>
+    </div>
+    <div class="login-err" id="setupErr" style="margin-top:12px;height:auto;"></div>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app" style="display:none;">
+
+<header class="hdr">
+  <div class="hdr-inner">
+    <div class="hdr-left">
+      <div class="hdr-org">イーワンスクエア　共同生活援助</div>
+      <div class="hdr-title">令和７年度　チェックリスト提出管理</div>
+    </div>
+    <div class="hdr-actions">
+      <a href="https://web.pref.hyogo.lg.jp/kf30/documents/r7cl19.xlsx"
+         target="_blank" class="btn-xl">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+        </svg>Excelを開く
+      </a>
+      <button class="btn-sm" onclick="exportData()">💾 エクスポート</button>
+      <button class="btn-sm" onclick="document.getElementById('importFile').click()">📂 インポート</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+      <button class="btn-sm" onclick="doLogout()" title="ログアウト">🔒</button>
+    </div>
+  </div>
+</header>
+
+<!-- PROGRESS -->
+<div class="prog-wrap">
+  <div class="prog-card">
+    <div class="ring-wrap">
+      <svg class="ring" width="72" height="72" viewBox="0 0 72 72">
+        <circle class="rb" cx="36" cy="36" r="30"/>
+        <circle class="rf" id="rf" cx="36" cy="36" r="30" stroke-dasharray="188.5" stroke-dashoffset="188.5"/>
+      </svg>
+      <div class="ring-num">
+        <span id="doneNum">0</span>
+        <span class="ring-of">/ 12</span>
+      </div>
+    </div>
+    <div class="prog-info">
+      <div class="prog-lbl">提出準備の進捗</div>
+      <div class="prog-track"><div class="prog-fill" id="progBar"></div></div>
+      <div class="prog-pct" id="progPct">0% 完了</div>
+    </div>
+    <div class="deadline-blk">
+      <div class="dl-lbl">提出期限メモ</div>
+      <input type="text" class="dl-input" id="dlInput" placeholder="例：6月30日 必着"
+        oninput="saveDeadline(this.value)">
+    </div>
+  </div>
+</div>
+
+<!-- SHEET LIST -->
+<main class="main">
+  <div class="sec-lbl">シートごとの確認リスト</div>
+  <div class="sheet-list" id="sheetList"></div>
+</main>
+
+<!-- FOOTER -->
+<div class="ftool">
+  <div class="ftool-note">
+    ※ チェック状態・メモはこのブラウザに自動保存されます。<br>
+    別のPCに引き継ぐには「エクスポート→インポート」を使ってください。
+  </div>
+  <button class="btn-sm" onclick="resetAll()" style="color:var(--red);border-color:var(--rdim);">リセット</button>
+</div>
+
+</div><!-- /app -->
+
+<div id="toast"></div>
+
+<script>
+// ────────────────────────────────────────────
+// DATA
+// ────────────────────────────────────────────
+const SHEETS = [
+  {id:'yakusoku',icon:'誓',name:'誓約書',desc:'署名・法人名・事業所番号の記入',tag:'must',checks:[
+    {id:'y1',t:'日付を記入した（令和７年　月　日）'},
+    {id:'y2',t:'法人名を記入した'},
+    {id:'y3',t:'代表者の職氏名を記入・押印した'},
+    {id:'y4',t:'事業所名を記入した'},
+    {id:'y5',t:'事業所番号を記入した'},
+    {id:'y6',t:'記入担当者の職氏名を記入した'},
+    {id:'y7',t:'電話番号・電子メールを記入した'},
+  ]},
+  {id:'p1',icon:'P1',name:'（表紙）ページ１',desc:'施設区分・定員・各種加算の○つけ',tag:'must',checks:[
+    {id:'p1a',t:'事業所名・事業所番号を記入した'},
+    {id:'p1b',t:'施設の区分に○をした（介護包括型／日中支援型／外部サービス型）'},
+    {id:'p1c',t:'事業所所在地・電話番号・FAX・メールを記入した'},
+    {id:'p1d',t:'利用定員（総数）と大規模住居減算の有無を記入した'},
+    {id:'p1e',t:'人員配置区分に○をした'},
+    {id:'p1f',t:'夜間支援等体制加算の区分に○をした（なし・Ⅰ・Ⅱ・Ⅲ）'},
+    {id:'p1g',t:'福祉専門職員配置等加算・看護職員加算などに○をした'},
+    {id:'p1h',t:'その他全加算項目を確認・○つけした'},
+  ]},
+  {id:'p2',icon:'P2',name:'ページ２',desc:'共同生活住居ごとの状況（名称・定員・営業日）',tag:'must',checks:[
+    {id:'p2a',t:'住居１の名称・所在地（〒）を記入した'},
+    {id:'p2b',t:'住居１の定員・居室数・主たる対象者を記入した'},
+    {id:'p2c',t:'住居１の営業日（日〜祝）に○をした'},
+    {id:'p2d',t:'住居２以降も同様に記入した（該当住居数分）'},
+    {id:'p2e',t:'サテライト型住居の有無に○をした'},
+    {id:'p2f',t:'専任の世話人の有無を記入した'},
+  ]},
+  {id:'p3',icon:'P3',name:'ページ３',desc:'管理者・サービス管理責任者の詳細情報',tag:'must',checks:[
+    {id:'p3a',t:'管理者の氏名・就任年月日を記入した'},
+    {id:'p3b',t:'管理者の他事業所兼務の有無と内容を記入した'},
+    {id:'p3c',t:'サービス管理責任者の氏名・就任年月日・勤務形態を記入した'},
+    {id:'p3d',t:'サビ管の資格・実務経験を記入した'},
+    {id:'p3e',t:'サビ管の研修（基礎・実践・更新）の修了状況を記入した'},
+    {id:'p3f',t:'サビ管の他事業所兼務の有無を記入した'},
+  ]},
+  {id:'p4',icon:'P4',name:'ページ４',desc:'世話人・生活支援員のシフト表（24時間グラフ）',tag:'must',checks:[
+    {id:'p4a',t:'全職員分（または類型化）のシフトを記入した'},
+    {id:'p4b',t:'各職員の実労働時間・休憩・合計時間を記入した'},
+    {id:'p4c',t:'始業時間・終業時間を記入した'},
+    {id:'p4d',t:'日課欄（起床・食事・消灯など）を記入した'},
+    {id:'p4e',t:'引き継ぎ時間・方法（朝昼夕夜）を記入した'},
+    {id:'p4f',t:'※既存シフト表添付の場合：必要項目が全て含まれているか確認した'},
+  ]},
+  {id:'p5',icon:'P5',name:'ページ５',desc:'R6.4〜R7.4の月別利用状況・区分別人員',tag:'must',checks:[
+    {id:'p5a',t:'住居別の月別利用実人員（R6.4〜R7.4）を記入した'},
+    {id:'p5b',t:'障害支援区分別（区分1〜6）の月別人員を記入した'},
+    {id:'p5c',t:'新規入居者数・退去者数・体験利用者数を記入した'},
+    {id:'p5d',t:'単身生活等への移行者数を記入した'},
+  ]},
+  {id:'p6',icon:'P6',name:'ページ６',desc:'日中支援加算(Ⅱ)・入院時支援特別加算の算定事例',tag:'cond',checks:[
+    {id:'p6a',t:'日中支援加算(Ⅱ)を算定した場合：事例を最大2件記入した'},
+    {id:'p6b',t:'入院時支援特別加算を算定した場合：サービスコードと事例を記入した'},
+    {id:'p6c',t:'算定なしの場合は空欄でよいことを確認した'},
+  ]},
+  {id:'p789',icon:'7-9',name:'ページ７・８・９',desc:'費用の状況・苦情処理・虐待防止体制など',tag:'must',checks:[
+    {id:'p789a',t:'食材料費・家賃・光熱水費・日用品費・その他の費用と金額を記入した'},
+    {id:'p789b',t:'食材料費にかかる記録の有無に○をした'},
+    {id:'p789c',t:'あいまいな名目費用（管理協力金等）がないか確認した'},
+    {id:'p789d',t:'苦情処理窓口の職名・氏名を記入した'},
+    {id:'p789e',t:'R6年度の苦情件数と対応結果を記入した'},
+    {id:'p789f',t:'虐待防止・第三者評価の体制状況を記入した'},
+  ]},
+  {id:'p10',icon:'P10',name:'ページ10',desc:'消防計画・避難訓練・防災設備・耐震化',tag:'must',checks:[
+    {id:'p10a',t:'消防計画の届出年月日を記入した'},
+    {id:'p10b',t:'防火管理者の職氏名を記入した'},
+    {id:'p10c',t:'避難訓練・通報訓練・消火訓練の年回数を記入した'},
+    {id:'p10d',t:'うち夜間または夜間想定の訓練回数を記入した'},
+    {id:'p10e',t:'耐震化診断の受検状況（済・未）に○をした'},
+    {id:'p10f',t:'福祉避難所の指定・災害協定・備蓄物資の有無に○をした'},
+    {id:'p10g',t:'防火設備・消防用設備の整備状況を記入した'},
+  ]},
+  {id:'p11',icon:'P11',name:'ページ11',desc:'職員の4月勤務実績（処遇改善支給額含む）',tag:'must',checks:[
+    {id:'p11a',t:'全職員の職種・勤務形態・氏名を記入した'},
+    {id:'p11b',t:'第1〜第4週の出勤日を記入した'},
+    {id:'p11c',t:'4週合計時間数・週平均勤務時間数を記入した'},
+    {id:'p11d',t:'処遇改善支給額を記入した'},
+    {id:'p11e',t:'兼務先・資格・3年以上従事の有無を記入した'},
+    {id:'p11f',t:'※既存資料添付の場合：全項目が含まれているか確認した'},
+  ]},
+  {id:'p12',icon:'12-16',name:'ページ12〜16',desc:'加算等自己点検票（チェックボックス確認）',tag:'must',checks:[
+    {id:'p12a',t:'人員配置区分の該当項目に□チェックを入れた'},
+    {id:'p12b',t:'人員配置体制加算（Ⅰ〜ⅩⅣ）のうち算定分をチェックした'},
+    {id:'p12c',t:'夜間支援等体制加算（Ⅰ〜Ⅵ）の算定分をチェックした'},
+    {id:'p12d',t:'福祉専門職員配置等加算・看護職員加算などをチェックした'},
+    {id:'p12e',t:'処遇改善加算・特定処遇改善・ベースアップ加算をチェックした'},
+    {id:'p12f',t:'チェックした加算が届出体制と一致しているか確認した'},
+  ]},
+  {id:'shintai',icon:'拘束',name:'身体拘束',desc:'身体拘束の有無・適正化指針・委員会状況',tag:'must',checks:[
+    {id:'sh1',t:'現在身体拘束を行っているか（有・無）に○をした'},
+    {id:'sh2',t:'身体拘束等適正化のための指針の整備有無に○をした'},
+    {id:'sh3',t:'緊急やむを得ない場合の要件・基準を定めているか○をした'},
+    {id:'sh4',t:'判断方法（委員会で決定など）を記入した'},
+    {id:'sh5',t:'身体拘束適正化委員会の開催状況を記入した'},
+  ]},
+];
+
+// ────────────────────────────────────────────
+// AUTH
+// ────────────────────────────────────────────
+const K_PW   = 'eone_pw';
+const K_AUTH = 'eone_auth';
+const K_DATA = 'eone_r7';
+
+function hash(s){ // simple obfuscation – not cryptographic
+  let h=0;for(let i=0;i<s.length;i++){h=Math.imul(31,h)+s.charCodeAt(i)|0;}
+  return h.toString(36);
+}
+
+function boot(){
+  const pw   = localStorage.getItem(K_PW);
+  const auth = sessionStorage.getItem(K_AUTH);
+
+  if(!pw){
+    show('setupScreen'); return;
+  }
+  if(!auth){
+    show('loginScreen'); return;
+  }
+  launchApp();
+}
+
+function doSetup(){
+  const p1 = document.getElementById('setPw1').value;
+  const p2 = document.getElementById('setPw2').value;
+  const err = document.getElementById('setupErr');
+  if(!p1){ err.textContent='パスワードを入力してください'; return; }
+  if(p1 !== p2){ err.textContent='パスワードが一致しません'; return; }
+  localStorage.setItem(K_PW, hash(p1));
+  localStorage.setItem('eone_r7_setup','done');
+  sessionStorage.setItem(K_AUTH,'1');
+  hide('setupScreen');
+  launchApp();
+}
+
+function skipPw(){
+  localStorage.setItem(K_PW,'__none__');
+  localStorage.setItem('eone_r7_setup','done');
+  sessionStorage.setItem(K_AUTH,'1');
+  hide('setupScreen');
+  launchApp();
+}
+
+function doLogin(){
+  const pw  = localStorage.getItem(K_PW);
+  const val = document.getElementById('pwIn').value;
+  const err = document.getElementById('pwErr');
+  if(pw === '__none__' || hash(val) === pw){
+    sessionStorage.setItem(K_AUTH,'1');
+    hide('loginScreen');
+    launchApp();
+  } else {
+    err.textContent = 'パスワードが違います';
+    setTimeout(()=>err.textContent='', 2000);
+    document.getElementById('pwIn').value='';
+  }
+}
+
+function doLogout(){
+  if(!confirm('ログアウトしますか？')) return;
+  sessionStorage.removeItem(K_AUTH);
+  hide('app');
+  document.getElementById('pwIn').value='';
+  show('loginScreen');
+}
+
+// ────────────────────────────────────────────
+// STORAGE
+// ────────────────────────────────────────────
+let S = {};
+function load(){ try{ S=JSON.parse(localStorage.getItem(K_DATA)||'{}'); }catch{ S={}; } }
+function save(){ localStorage.setItem(K_DATA, JSON.stringify(S)); }
+
+// ────────────────────────────────────────────
+// RENDER
+// ────────────────────────────────────────────
+function launchApp(){
+  load();
+  show('app');
+  render();
+}
+
+function render(){
+  renderSheets();
+  updateProgress();
+  document.getElementById('dlInput').value = S.deadline || '';
+}
+
+function renderSheets(){
+  const list = document.getElementById('sheetList');
+  list.innerHTML = '';
+  SHEETS.forEach(sh => {
+    const done = !!S['done_'+sh.id];
+    const card = document.createElement('div');
+    card.className = 'scard'+(done?' done':'');
+    card.id = 'c_'+sh.id;
+
+    const tagC = done ? 'td' : (sh.tag==='must'?'tm':'tc');
+    const tagL = done ? '完了' : (sh.tag==='must'?'必須':'該当時');
+
+    const chks = sh.checks.map(c=>{
+      const chk = S['c_'+c.id] ? 'checked' : '';
+      return `<div class="citem">
+        <input type="checkbox" id="${c.id}" ${chk} onchange="tick('${c.id}','${sh.id}',this.checked)">
+        <label for="${c.id}">${c.t}</label>
+      </div>`;
+    }).join('');
+
+    const memo = S['m_'+sh.id]||'';
+
+    card.innerHTML = `
+      <div class="scard-hdr" onclick="toggle('${sh.id}')">
+        <div class="sicon">${sh.icon}</div>
+        <div class="smeta">
+          <div class="sname">${sh.name}</div>
+          <div class="sdesc">${sh.desc}</div>
+        </div>
+        <span class="stag ${tagC}">${tagL}</span>
+        <svg class="schev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="sbody">
+        <div class="ctitle">確認項目</div>
+        ${chks}
+        <div class="memo-wrap">
+          <div class="memo-lbl">メモ（昨年の数値・注意点など）</div>
+          <textarea class="memo-ta" placeholder="例：昨年は定員5名、世話人3名、サビ管は〇〇さん" oninput="setMemo('${sh.id}',this.value)">${memo}</textarea>
+        </div>
+        <div class="cactions">
+          <button class="btn-done ${done?'done-off':'done-on'}" onclick="markDone('${sh.id}',${!done})">
+            ${done ? '✓ 完了を取り消す' : 'このシートを完了にする ✓'}
+          </button>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+function updateProgress(){
+  const total = SHEETS.length;
+  const done  = SHEETS.filter(s=>S['done_'+s.id]).length;
+  const pct   = total ? Math.round(done/total*100) : 0;
+  document.getElementById('progBar').style.width = pct+'%';
+  document.getElementById('progPct').textContent = pct+'% 完了';
+  document.getElementById('doneNum').textContent = done;
+  const C = 188.5;
+  document.getElementById('rf').style.strokeDashoffset = C - C*pct/100;
+}
+
+// ────────────────────────────────────────────
+// INTERACTIONS
+// ────────────────────────────────────────────
+function toggle(id){
+  const c = document.getElementById('c_'+id);
+  c.classList.toggle('open');
+}
+function tick(cid, shid, val){
+  S['c_'+cid] = val;
+  save();
+}
+function setMemo(shid, val){
+  S['m_'+shid] = val;
+  save();
+}
+function markDone(shid, val){
+  S['done_'+shid] = val;
+  save();
+  render();
+}
+function saveDeadline(v){
+  S.deadline = v;
+  save();
+}
+
+// ────────────────────────────────────────────
+// EXPORT / IMPORT
+// ────────────────────────────────────────────
+function exportData(){
+  const blob = new Blob([JSON.stringify(S, null, 2)], {type:'application/json'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = 'checklist_r7_backup.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('エクスポートしました');
+}
+function importData(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try{
+      const data = JSON.parse(ev.target.result);
+      S = data;
+      save();
+      render();
+      toast('インポートしました ✓');
+    } catch{
+      toast('ファイルの形式が違います');
+    }
+    e.target.value='';
+  };
+  reader.readAsText(file);
+}
+
+// ────────────────────────────────────────────
+// MISC
+// ────────────────────────────────────────────
+function resetAll(){
+  if(!confirm('全てのチェック状態・メモをリセットしますか？')) return;
+  S = {};
+  save();
+  render();
+  toast('リセットしました');
+}
+let toastTimer;
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove('show'), 2500);
+}
+function show(id){ document.getElementById(id).style.display='flex'; }
+function hide(id){ document.getElementById(id).style.display='none'; }
+
+// ────────────────────────────────────────────
+// BOOT
+// ────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>
